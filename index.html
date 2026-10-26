@@ -5,231 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10121b">
   <title>Premium Calculator</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #10121b;
-      color: #f5f5fb;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      padding: 32px 16px;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(111, 79, 228, .2), transparent 48%),
-        #10121b;
-    }
-
-    button { font: inherit; }
-
-    .app { width: min(100%, 390px); }
-
-    .eyebrow {
-      margin: 0 0 10px;
-      color: #aaa5bd;
-      font-size: .76rem;
-      font-weight: 700;
-      letter-spacing: .18em;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0 0 24px;
-      font-size: clamp(1.8rem, 8vw, 2.25rem);
-      letter-spacing: -.055em;
-      text-align: center;
-    }
-
-    .calculator {
-      overflow: hidden;
-      padding: 18px;
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 28px;
-      background: rgba(25, 27, 39, .94);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
-    }
-
-    .screen {
-      min-height: 142px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: flex-end;
-      padding: 14px 8px 22px;
-      overflow: hidden;
-    }
-
-    .expression {
-      width: 100%;
-      min-height: 28px;
-      overflow: hidden;
-      color: #9b98a9;
-      font-size: 1rem;
-      text-align: right;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .result {
-      max-width: 100%;
-      overflow: hidden;
-      color: #fff;
-      font-size: clamp(2.6rem, 14vw, 3.6rem);
-      font-weight: 600;
-      letter-spacing: -.06em;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .result.locked { color: #ffca75; }
-
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .key {
-      min-height: 66px;
-      border: 0;
-      border-radius: 19px;
-      background: #292b39;
-      color: #f5f5fb;
-      cursor: pointer;
-      font-size: 1.3rem;
-      font-weight: 550;
-      transition: background .15s ease, transform .15s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .key:hover { background: #37394a; }
-    .key:active { transform: scale(.96); }
-    .key:focus-visible, .dialog button:focus-visible {
-      outline: 3px solid #b7a4ff;
-      outline-offset: 3px;
-    }
-
-    .key.utility { background: #343342; color: #c8baff; }
-    .key.operator { background: #302a43; color: #c9b8ff; }
-    .key.equals {
-      background: linear-gradient(140deg, #8c6cf0, #6946d8);
-      color: #fff;
-      font-size: 1.5rem;
-    }
-    .key.equals:hover { background: linear-gradient(140deg, #9a7cf4, #7958e4); }
-    .key.zero { grid-column: span 2; }
-
-    .hint {
-      margin: 16px 4px 2px;
-      color: #9693a4;
-      font-size: .78rem;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .overlay {
-      position: fixed;
-      z-index: 2;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      background: rgba(5, 6, 12, .76);
-      backdrop-filter: blur(8px);
-    }
-
-    .overlay[hidden] { display: none; }
-
-    .dialog {
-      width: min(100%, 390px);
-      padding: 30px;
-      border: 1px solid rgba(255, 255, 255, .13);
-      border-radius: 26px;
-      background: #20212e;
-      box-shadow: 0 26px 90px rgba(0, 0, 0, .55);
-      text-align: center;
-    }
-
-    .crown {
-      width: 54px;
-      height: 54px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 17px;
-      border-radius: 18px;
-      background: rgba(255, 199, 109, .13);
-      color: #ffca75;
-      font-size: 1.6rem;
-    }
-
-    .dialog h2 {
-      margin: 0 0 10px;
-      font-size: 1.5rem;
-      letter-spacing: -.035em;
-    }
-
-    .dialog p {
-      margin: 0;
-      color: #b6b3c2;
-      font-size: .94rem;
-      line-height: 1.6;
-    }
-
-    .dialog .checkout-note {
-      min-height: 22px;
-      margin-top: 12px;
-      color: #ffca75;
-      font-size: .82rem;
-    }
-
-    .dialog-actions {
-      display: grid;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .dialog button {
-      min-height: 48px;
-      border: 0;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: 650;
-    }
-
-    .upgrade {
-      background: linear-gradient(140deg, #8c6cf0, #6946d8);
-      color: white;
-    }
-
-    .close {
-      background: #333442;
-      color: #e1dfea;
-    }
-
-    @media (max-width: 360px) {
-      .calculator { padding: 14px; }
-      .keypad { gap: 8px; }
-      .key { min-height: 58px; border-radius: 16px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="app">
     <p class="eyebrow">Your numbers, your way</p>
-    <h1>Premium Calculator</h1>
+    <h1>Calculator</h1>
     <section class="calculator" aria-label="Calculator">
       <div class="screen" aria-live="polite" aria-atomic="true">
         <div class="expression" id="expression" aria-label="Expression"></div>
@@ -257,123 +38,34 @@
         <button class="key equals" type="button" data-action="equals" aria-label="Equals">=</button>
       </div>
     </section>
-    <p class="hint">Enter an expression and press = to reveal the premium result screen.</p>
+    <p class="hint">Enter an expression and press = to see the Premium options.</p>
   </main>
 
   <div class="overlay" id="premium-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-description" hidden>
     <section class="dialog">
       <div class="crown" aria-hidden="true">♛</div>
-      <h2 id="dialog-title">Premium result</h2>
-      <p id="dialog-description">Your answer is <strong>NA</strong>. Subscribe to Premium to reveal your result.</p>
+      <h2 id="dialog-title">Buy Premium to see your results</h2>
+      <p id="dialog-description">Your result is <strong>NA</strong>. Choose a Premium plan to unlock it.</p>
+      <div class="plans" aria-label="Premium plans">
+        <article class="plan">
+          <h3>Monthly</h3>
+          <p class="price">₱99 <span>/ month</span></p>
+          <button class="upgrade" type="button" data-plan="Monthly">Buy Monthly</button>
+        </article>
+        <article class="plan featured">
+          <span class="recommended">BEST VALUE</span>
+          <h3>Yearly Premium</h3>
+          <p class="price">₱799 <span>/ year</span></p>
+          <button class="upgrade" type="button" data-plan="Yearly">Buy Yearly</button>
+        </article>
+      </div>
       <p class="checkout-note" id="checkout-note" aria-live="polite"></p>
       <div class="dialog-actions">
-        <button class="upgrade" type="button" id="upgrade-button">Upgrade to Premium</button>
         <button class="close" type="button" id="close-button">Maybe later</button>
       </div>
     </section>
   </div>
 
-  <script>
-    (() => {
-      const expressionDisplay = document.getElementById("expression");
-      const resultDisplay = document.getElementById("result");
-      const dialog = document.getElementById("premium-dialog");
-      const closeButton = document.getElementById("close-button");
-      const upgradeButton = document.getElementById("upgrade-button");
-      const checkoutNote = document.getElementById("checkout-note");
-      let expression = "";
-      let isLocked = false;
-
-      const render = () => {
-        expressionDisplay.textContent = expression
-          .replace(/\*/g, " × ")
-          .replace(/\//g, " ÷ ")
-          .replace(/\+/g, " + ")
-          .replace(/-/g, " − ");
-        resultDisplay.textContent = isLocked ? "NA" : (expression || "0");
-        resultDisplay.classList.toggle("locked", isLocked);
-      };
-
-      const enterValue = (value) => {
-        if (isLocked) {
-          expression = "";
-          isLocked = false;
-        }
-        if (value === ".") {
-          const currentNumber = expression.split(/[+\-*/%]/).pop();
-          if (currentNumber.includes(".")) return;
-          if (!currentNumber) expression += "0";
-        }
-        if ("+-*/%".includes(value)) {
-          if (!expression && value !== "-") return;
-          if (/[+\-*/%]$/.test(expression)) {
-            expression = expression.slice(0, -1);
-          }
-        }
-        expression += value;
-        render();
-      };
-
-      const showPremium = () => {
-        if (!expression || /[+\-*/%.]$/.test(expression)) return;
-        isLocked = true;
-        render();
-        checkoutNote.textContent = "";
-        dialog.hidden = false;
-        closeButton.focus();
-      };
-
-      document.querySelector(".keypad").addEventListener("click", (event) => {
-        const button = event.target.closest("button");
-        if (!button) return;
-        const { action, value } = button.dataset;
-        if (action === "equals") {
-          showPremium();
-        } else if (action === "clear") {
-          expression = "";
-          isLocked = false;
-          render();
-        } else if (action === "backspace") {
-          if (isLocked) isLocked = false;
-          expression = expression.slice(0, -1);
-          render();
-        } else if (value) {
-          enterValue(value);
-        }
-      });
-
-      closeButton.addEventListener("click", () => {
-        dialog.hidden = true;
-      });
-
-      upgradeButton.addEventListener("click", () => {
-        checkoutNote.textContent = "Premium checkout is not connected yet. Contact the site owner to subscribe.";
-      });
-
-      dialog.addEventListener("click", (event) => {
-        if (event.target === dialog) dialog.hidden = true;
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !dialog.hidden) {
-          dialog.hidden = true;
-          return;
-        }
-        if (!dialog.hidden || event.ctrlKey || event.metaKey || event.altKey) return;
-        if (/^[0-9.]$/.test(event.key)) enterValue(event.key);
-        else if ("+-*/%".includes(event.key)) enterValue(event.key);
-        else if (event.key === "Enter" || event.key === "=") showPremium();
-        else if (event.key === "Backspace") {
-          expression = expression.slice(0, -1);
-          isLocked = false;
-          render();
-        } else if (event.key === "Escape") {
-          expression = "";
-          isLocked = false;
-          render();
-        }
-      });
-    })();
-  </script>
+  <script src="script.js" defer></script>
 </body>
 </html>
